@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -3271,7 +3271,7 @@ Herbert published Dune in 1965 after twenty rejections. He wrote five sequels, e
 Paul sees all of it. He walks into the role because the alternatives are worse. He becomes the thing he feared because becoming it is the only way to shape it. He is the most powerful man in the universe, and he is trapped — by prophecy, by politics, by the genetic destiny the Bene Gesserit engineered over ninety generations, by the love of a people who worship him and will kill in his name whether he asks them to or not.
 
 The desert is patient. The worms are patient. The spice will outlast every empire built on it. And somewhere in the deep desert, a boy who wanted to be just a boy sits on the back of a sandworm and watches the future unfold like a map of a country he never wanted to rule.`},
-{id:"crime-and-punishment-2",cat:"lit",bookTitle:"The Idiot",author:"Fyodor Dostoevsky",region:"russian",readTime:"14 min",year:"1869",words:736,preview:"A genuinely good man arrives in Petersburg. Everyone loves him. Everyone destroys him. Dostoevsky's attempt to portray a perfectly beautiful human being — and his proof that the world cannot bear one.",summary:`Prince Lev Nikolayevich Myshkin returns to Russia on a train from Switzerland, where he has spent four years in a clinic being treated for epilepsy. He is twenty-six. He has almost no money. He has no connections, no experience of society, and no guile. He is gentle, honest, trusting, and possessed of an intuition so acute that people feel seen by him — truly seen — in a way that is either wonderful or unbearable.
+{id:"the-idiot",cat:"lit",bookTitle:"The Idiot",author:"Fyodor Dostoevsky",region:"russian",readTime:"14 min",year:"1869",words:736,preview:"A genuinely good man arrives in Petersburg. Everyone loves him. Everyone destroys him. Dostoevsky's attempt to portray a perfectly beautiful human being — and his proof that the world cannot bear one.",summary:`Prince Lev Nikolayevich Myshkin returns to Russia on a train from Switzerland, where he has spent four years in a clinic being treated for epilepsy. He is twenty-six. He has almost no money. He has no connections, no experience of society, and no guile. He is gentle, honest, trusting, and possessed of an intuition so acute that people feel seen by him — truly seen — in a way that is either wonderful or unbearable.
 
 On the train, he meets Rogozhin — a dark, intense young man who has just inherited a fortune and is consumed by passion for Nastasya Filippovna, a woman of extraordinary beauty who has been the kept mistress of a wealthy man named Totsky since she was a teenager. Totsky wants to marry her off respectably and is offering seventy-five thousand rubles as a dowry. Nastasya Filippovna despises herself, despises the men who use her, and is using the auction of her own person as a form of self-destruction.
 
@@ -4399,7 +4399,87 @@ function H(s){let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h
 function gc(t,a,w,h){w=w||200;h=h||280;const s=H(t+a),p=CP[s%CP.length];const sh=[(x,y,r)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="var(--cover-stroke)" stroke-width="1"/>`,(x,y,r)=>`<rect x="${x-r}" y="${y-r}" width="${r*2}" height="${r*2}" fill="none" stroke="var(--cover-stroke)" stroke-width="1" transform="rotate(45 ${x} ${y})"/>`,(x,y,r)=>`<line x1="${x-r}" y1="${y}" x2="${x+r}" y2="${y}" stroke="var(--cover-inner)" stroke-width="1"/><line x1="${x}" y1="${y-r}" x2="${x}" y2="${y+r}" stroke="var(--cover-inner)" stroke-width="1"/>`,(x,y,r)=>`<polygon points="${x},${y-r} ${x+r*.87},${y+r*.5} ${x-r*.87},${y+r*.5}" fill="none" stroke="var(--cover-stroke)" stroke-width="1"/>`];const sf=sh[(s>>3)%sh.length];let d='';for(let i=0;i<3;i++)d+=sf(w*.3+((s>>i)%60),h*.25+((s>>(i+2))%100),20+((s>>(i+4))%30));const tt=t.length>22?t.slice(0,20)+'…':t;const aa=a.length>28?a.slice(0,26)+'…':a;return`<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="g${s}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${p[0]}"/><stop offset="50%" stop-color="${p[1]}"/><stop offset="100%" stop-color="${p[2]}"/></linearGradient></defs><rect width="${w}" height="${h}" rx="3" fill="url(#g${s})"/><rect x="12" y="12" width="${w-24}" height="${h-24}" rx="2" fill="none" stroke="var(--cover-inner)" stroke-width=".5"/>${d}<text x="${w/2}" y="${h*.55}" text-anchor="middle" fill="var(--cover-text)" font-family="Georgia,serif" font-size="14" font-weight="700">${tt}</text><text x="${w/2}" y="${h*.55+20}" text-anchor="middle" fill="var(--cover-sub)" font-family="Georgia,serif" font-size="9">${aa}</text></svg>`}
 
 /* ═══ NAVIGATION ═══ */
-function go(v,d){cView=v;if(v==='region'){cReg=d;cAuth=null}else if(v==='author')cAuth=d;else if(v==='retelling')cRet=d;else{cReg=null;cAuth=null;cRet=null}document.getElementById('mob-nav').style.display='none';ren();window.scrollTo({top:0,behavior:'smooth'});document.querySelectorAll('.nl').forEach(e=>e.classList.toggle('active',e.dataset.p===v))}
+
+// Build a hash string for the current state
+function buildHash(v,d){
+  if(v==='home')return '#home';
+  if(v==='library')return '#library';
+  if(v==='blog')return '#blog';
+  if(v==='history')return '#history';
+  if(v==='about')return '#about';
+  if(v==='region'&&d)return '#region/'+encodeURIComponent(d.id);
+  if(v==='author'&&d)return '#author/'+encodeURIComponent(d.ri)+'/'+encodeURIComponent(d.n.replace(/\s+/g,'-'));
+  if(v==='retelling'&&d)return '#retelling/'+encodeURIComponent(d.id);
+  if(v==='era')return '#era/'+cEra;
+  return '#'+v;
+}
+
+// Navigate to a hash string and restore state
+function restoreFromHash(hash){
+  if(!hash||hash==='#'||hash===''){go('home');return;}
+  var h=hash.replace(/^#/,'');
+  var parts=h.split('/');
+  var v=parts[0];
+  if(v==='home'||v==='library'||v==='blog'||v==='history'||v==='about'){
+    go(v);return;
+  }
+  if(v==='region'&&parts[1]){
+    var rid=decodeURIComponent(parts[1]);
+    for(var i=0;i<R.length;i++){if(R[i].id===rid){go('region',R[i]);return;}}
+    go('home');return;
+  }
+  if(v==='author'&&parts[1]&&parts[2]){
+    var rid=decodeURIComponent(parts[1]);
+    var aname=decodeURIComponent(parts[2]).replace(/-/g,' ');
+    for(var i=0;i<R.length;i++){
+      if(R[i].id===rid){
+        for(var j=0;j<R[i].a.length;j++){
+          if(R[i].a[j].n.toLowerCase()===aname.toLowerCase()){
+            var a=R[i].a[j];
+            go('author',{n:a.n,y:a.y,o:a.o,b:a.b,p:a.p,rn:R[i].name,ri:R[i].id,re:R[i].emoji,rc:R[i].color});
+            return;
+          }
+        }
+        break;
+      }
+    }
+    go('home');return;
+  }
+  if(v==='retelling'&&parts[1]){
+    var rid=decodeURIComponent(parts[1]);
+    for(var i=0;i<RT.length;i++){if(RT[i].id===rid){go('retelling',RT[i]);return;}}
+    go('home');return;
+  }
+  if(v==='era'&&parts[1]!==undefined){
+    var idx=parseInt(parts[1]);
+    if(!isNaN(idx)&&ERAS[idx]){cView='era';cEra=idx;cReg=null;cAuth=null;cRet=null;document.getElementById('mob-nav').style.display='none';ren();window.scrollTo({top:0,behavior:'smooth'});return;}
+  }
+  go('home');
+}
+
+var _skipHashUpdate=false;
+
+function go(v,d){
+  cView=v;
+  if(v==='region'){cReg=d;cAuth=null}
+  else if(v==='author')cAuth=d;
+  else if(v==='retelling')cRet=d;
+  else{cReg=null;cAuth=null;cRet=null}
+  document.getElementById('mob-nav').style.display='none';
+  ren();
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.querySelectorAll('.nl').forEach(e=>e.classList.toggle('active',e.dataset.p===v));
+  if(!_skipHashUpdate){
+    var h=buildHash(v,d);
+    if(window.location.hash!==h)window.history.pushState({v:v},document.title,h);
+  }
+}
+
+window.addEventListener('popstate',function(){
+  _skipHashUpdate=true;
+  restoreFromHash(window.location.hash);
+  _skipHashUpdate=false;
+});
 function toggleMob(){const n=document.getElementById('mob-nav');n.style.display=n.style.display==='flex'?'none':'flex'}
 function E(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 
@@ -4468,6 +4548,18 @@ function rEraCardsGrid(forHome){
 }
 
 function goReg(id){for(var i=0;i<R.length;i++){if(R[i].id===id){go('region',R[i]);return;}}}
+function goToAuthorByName(name){
+  var nl=name.toLowerCase();
+  for(var i=0;i<R.length;i++){
+    for(var j=0;j<R[i].a.length;j++){
+      if(R[i].a[j].n.toLowerCase()===nl){
+        var a=R[i].a[j];
+        go('author',{n:a.n,y:a.y,o:a.o,b:a.b,p:a.p,rn:R[i].name,ri:R[i].id,re:R[i].emoji,rc:R[i].color});
+        return;
+      }
+    }
+  }
+}
 function rGroups(){return rGroupCards(true)}
 
 
@@ -4476,7 +4568,7 @@ function goAuth(regId,aIdx){
   if(!reg)return;var a=reg.a[aIdx];
   go('author',{n:a.n,y:a.y,o:a.o,b:a.b,p:a.p,rn:reg.name,ri:reg.id,re:reg.emoji,rc:reg.color});
 }
-function goEra(i){cView='era';cEra=i;cReg=null;cAuth=null;cRet=null;document.getElementById('mob-nav').style.display='none';ren();window.scrollTo({top:0,behavior:'smooth'});}
+function goEra(i){cView='era';cEra=i;cReg=null;cAuth=null;cRet=null;document.getElementById('mob-nav').style.display='none';ren();window.scrollTo({top:0,behavior:'smooth'});if(!_skipHashUpdate){var h='#era/'+i;if(window.location.hash!==h)window.history.pushState({v:'era'},document.title,h);}}
 
 function rEraPage(){
 if(cEra===null)return'';var era=ERAS[cEra];if(!era)return'';
@@ -4988,7 +5080,7 @@ return '<div class="fi" style="padding:50px 0 80px;max-width:700px">'
 +'<div style="flex-shrink:0">'+gc(r.bookTitle,r.author,140,200)+'</div>'
 +'<div>'
 +'<h1 style="font-size:clamp(28px,5vw,38px);font-weight:400;color:var(--text-bright);line-height:1.15;margin-bottom:8px">'+E(r.bookTitle)+'</h1>'
-+'<p class="bt" style="font-size:16px;margin-bottom:8px">by '+E(r.author)+'</p>'
++'<p class="bt" style="font-size:16px;margin-bottom:8px">by <span style="color:var(--gold);cursor:pointer;transition:opacity .2s" onmouseover="this.style.opacity=\'.7\'" onmouseout="this.style.opacity=\'1\'" onclick="goToAuthorByName(\''+E(r.author).replace(/'/g,"\\'")+'\')">'+E(r.author)+'</span></p>'
 +'<p class="mono" style="font-size:10px;margin-bottom:12px">'+r.readTime+' read \u00b7 ~'+r.words+' words'+(r.year?' \u00b7 '+E(String(r.year)):'')+'</p>'
 +'<p class="bt" style="font-size:14px;font-style:italic;color:var(--text);line-height:1.7">'+E(r.preview)+'</p>'
 +'</div></div>'
@@ -5102,9 +5194,14 @@ return '<div class="fi" style="padding:50px 0 80px;max-width:680px">'
 +'</div>';}
 
 
-ren();
-
-ren();
+// Initial load: restore from URL hash if present, else render home
+_skipHashUpdate=true;
+if(window.location.hash&&window.location.hash.length>1){
+  restoreFromHash(window.location.hash);
+}else{
+  ren();
+}
+_skipHashUpdate=false;
 
 </script>
 <div id="tts-bar">
