@@ -72,6 +72,7 @@ footer{border-top:1px solid var(--border);padding:36px clamp(16px,4vw,48px);text
       <button class="nl" data-p="library" onclick="go('library')">Library</button>
       <button class="nl" data-p="blog" onclick="go('blog')">Blog</button>
       <button class="nl" data-p="history" onclick="go('history')">History</button>
+      <button class="nl" data-p="request" onclick="go('request')" style="color:var(--gold)">📬 Request</button>
       <button class="nl" data-p="about" onclick="go('about')">About</button>
     </nav>
     <div style="position:relative;margin-left:8px" class="desk">
@@ -94,6 +95,7 @@ footer{border-top:1px solid var(--border);padding:36px clamp(16px,4vw,48px);text
   <button class="nl" onclick="go('library')">Library</button>
   <button class="nl" onclick="go('blog')">Blog</button>
   <button class="nl" onclick="go('history')">History</button>
+  <button class="nl" onclick="go('request')" style="color:var(--gold)">📬 Request a Book</button>
   <button class="nl" onclick="go('about')">About</button>
 <div style="padding:8px 0">
 <input type="text" placeholder="Search authors, books..." 
@@ -4384,7 +4386,20 @@ var tA=0,tB=0;for(var i=0;i<R.length;i++){tA+=R[i].a.length;for(var j=0;j<R[i].a
 
 /* FUNCTIONS */
 var cView='home',cReg=null,cAuth=null,cRet=null,cEra=null,cQuery='';
+var blogSort='az';var histSort='az';
+var homePicks=[];
 function getAY(a){var y=a.y,m=y.match(/(\d{3,4})/);if(m)return parseInt(m[1]);if(y.indexOf("8th c")>=0)return -700;if(y.indexOf("6th c")>=0)return -500;if(y.indexOf("5th c. BC")>=0)return -400;if(y.indexOf("5th c. AD")>=0)return 450;if(y.indexOf("978")>=0)return 978;return 0;}
+
+function sortItems(items,mode){
+  if(mode==='az'){
+    return items.slice().sort(function(a,b){return a.r.bookTitle.localeCompare(b.r.bookTitle);});
+  } else {
+    return items.slice().sort(function(a,b){return parseRTYear(a.r.year)-parseRTYear(b.r.year);});
+  }
+}
+function setBlogSort(m){blogSort=m;ren();}
+function setHistSort(m){histSort=m;ren();}
+function parseRTYear(y){if(!y)return 9999;var s=String(y).replace(/[~\s]/g,'');var bc=s.toUpperCase().indexOf('BC')>=0;var n=parseInt(s.replace(/[^0-9]/g,''));if(isNaN(n))return 9999;return bc?-n:n;}
 function getEraAuthors(era){var res=[];for(var ri=0;ri<R.length;ri++){for(var ai=0;ai<R[ri].a.length;ai++){var a=R[ri].a[ai],yr=getAY(a),lo=era.range[0]===null?-9999:era.range[0],hi=era.range[1];if(yr>=lo&&yr<hi)res.push({a:a,rid:R[ri].id,rn:R[ri].name,re:R[ri].emoji});}}return res;}
 
 
@@ -4407,6 +4422,7 @@ function buildHash(v,d){
   if(v==='blog')return '#blog';
   if(v==='history')return '#history';
   if(v==='about')return '#about';
+  if(v==='request')return '#request';
   if(v==='region'&&d)return '#region/'+encodeURIComponent(d.id);
   if(v==='author'&&d)return '#author/'+encodeURIComponent(d.ri)+'/'+encodeURIComponent(d.n.replace(/\s+/g,'-'));
   if(v==='retelling'&&d)return '#retelling/'+encodeURIComponent(d.id);
@@ -4420,7 +4436,7 @@ function restoreFromHash(hash){
   var h=hash.replace(/^#/,'');
   var parts=h.split('/');
   var v=parts[0];
-  if(v==='home'||v==='library'||v==='blog'||v==='history'||v==='about'){
+  if(v==='home'||v==='library'||v==='blog'||v==='history'||v==='about'||v==='request'){
     go(v);return;
   }
   if(v==='region'&&parts[1]){
@@ -4471,13 +4487,13 @@ function go(v,d){
   document.querySelectorAll('.nl').forEach(e=>e.classList.toggle('active',e.dataset.p===v));
   if(!_skipHashUpdate){
     var h=buildHash(v,d);
-    if(window.location.hash!==h)window.history.pushState({v:v},document.title,h);
+    try{if(window.location.hash!==h)window.history.pushState({v:v},document.title,h);}catch(e){}
   }
 }
 
 window.addEventListener('popstate',function(){
   _skipHashUpdate=true;
-  restoreFromHash(window.location.hash);
+  try{restoreFromHash(window.location.hash);}catch(e){}
   _skipHashUpdate=false;
 });
 function toggleMob(){const n=document.getElementById('mob-nav');n.style.display=n.style.display==='flex'?'none':'flex'}
@@ -4568,7 +4584,7 @@ function goAuth(regId,aIdx){
   if(!reg)return;var a=reg.a[aIdx];
   go('author',{n:a.n,y:a.y,o:a.o,b:a.b,p:a.p,rn:reg.name,ri:reg.id,re:reg.emoji,rc:reg.color});
 }
-function goEra(i){cView='era';cEra=i;cReg=null;cAuth=null;cRet=null;document.getElementById('mob-nav').style.display='none';ren();window.scrollTo({top:0,behavior:'smooth'});if(!_skipHashUpdate){var h='#era/'+i;if(window.location.hash!==h)window.history.pushState({v:'era'},document.title,h);}}
+function goEra(i){cView='era';cEra=i;cReg=null;cAuth=null;cRet=null;document.getElementById('mob-nav').style.display='none';ren();window.scrollTo({top:0,behavior:'smooth'});if(!_skipHashUpdate){var h='#era/'+i;try{if(window.location.hash!==h)window.history.pushState({v:'era'},document.title,h);}catch(e){}}}
 
 function rEraPage(){
 if(cEra===null)return'';var era=ERAS[cEra];if(!era)return'';
@@ -4593,14 +4609,16 @@ return '<div class="fi" style="padding:50px 0 80px">'
 
 function matchTitle(a,b){if(a===b)return true;if(a.indexOf(b)>=0||b.indexOf(a)>=0)return true;var a2=a.replace('The ',''),b2=b.replace('The ','');if(a2.indexOf(b2)>=0||b2.indexOf(a2)>=0)return true;var a3=a.replace(/[^a-zA-Z ]/g,'').toLowerCase(),b3=b.replace(/[^a-zA-Z ]/g,'').toLowerCase();if(a3.indexOf(b3)>=0||b3.indexOf(a3)>=0)return true;return false;}
 function rHistory(){
-// Build featured historical retellings section
-var featured='';var fCount=0;
-for(var i=0;i<RT.length;i++){var r=RT[i];
-if(r.cat!=='hist')continue;fCount++;
+// Build featured historical retellings — with sort toggle
+var histItems=[];
+for(var i=0;i<RT.length;i++){if(RT[i].cat==='hist')histItems.push({r:RT[i],idx:i});}
+var sorted=sortItems(histItems,histSort);
+var featured='';var fCount=sorted.length;
+for(var hi=0;hi<sorted.length;hi++){var i=sorted[hi].idx;var r=sorted[hi].r;
 featured+='<div class="card hcard" onclick="go(\'retelling\',RT['+i+'])">'
 +'<div class="cc" style="width:90px">'+gc(r.bookTitle,r.author,90,130)+'</div>'
 +'<div class="ic">'
-+'<p class="mono" style="font-size:9px;margin-bottom:4px">'+r.readTime+' \u00b7 ~'+r.words+' words</p>'
++'<p class="mono" style="font-size:9px;margin-bottom:4px">'+r.readTime+' \u00b7 ~'+r.words+' words'+(r.year?' \u00b7 '+r.year:'')+'</p>'
 +'<h3 style="font-size:15px;font-weight:400;color:var(--text-bright);margin-bottom:3px;line-height:1.3">'+E(r.bookTitle)+'</h3>'
 +'<p class="bt" style="font-size:11px;margin-bottom:4px">'+E(r.author)+'</p>'
 +'<p class="gold" style="font-size:11px;font-family:Source Serif 4;font-weight:500">Read retelling \u2192</p>'
@@ -4638,7 +4656,13 @@ return '<div class="fi" style="padding:50px 0 80px">'
 // Featured retellings section
 +(fCount>0?
 '<div style="margin-bottom:52px">'
-+'<h2 style="font-size:20px;font-weight:400;color:var(--gold);margin-bottom:4px;letter-spacing:.05em;text-transform:uppercase">Available Retellings ('+fCount+')</h2>'
++'<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:4px">'
++'<h2 style="font-size:20px;font-weight:400;color:var(--gold);letter-spacing:.05em;text-transform:uppercase">Available Retellings ('+fCount+')</h2>'
++'<div style="display:flex;align-items:center;gap:8px">'
++'<span class="mono" style="font-size:9px;color:var(--text-dim);letter-spacing:.1em">SORT:</span>'
++'<button onclick="setHistSort(\'az\')" class="btn btn-sm'+(histSort==='az'?'':' btn-g')+'" style="padding:5px 14px;font-size:11px">A \u2192 Z</button>'
++'<button onclick="setHistSort(\'date\')" class="btn btn-sm'+(histSort==='date'?'':' btn-g')+'" style="padding:5px 14px;font-size:11px">Old \u2192 New</button>'
++'</div></div>'
 +'<div class="dv" style="width:40px;margin:8px 0 20px"></div>'
 +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px">'+featured+'</div></div>':'')
 
@@ -4806,6 +4830,26 @@ function submitRequest(){
 }
 
 
+function shuffleHome(){
+  var featIdx=Math.floor(Date.now()/(1000*60*60*24))%RT.length;
+  homePicks=[];var used={};used[featIdx]=true;
+  while(homePicks.length<6){var ri=Math.floor(Math.random()*RT.length);if(!used[ri]){used[ri]=true;homePicks.push(ri);}}
+  var grid=document.getElementById('explore-grid');
+  if(!grid){ren();return;}
+  var html='';
+  for(var pi=0;pi<homePicks.length;pi++){var pr=RT[homePicks[pi]];
+    html+='<div class="card hcard" style="cursor:pointer" onclick="go(\'retelling\',RT['+homePicks[pi]+'])">'
+    +'<div class="cc" style="width:80px">'+gc(pr.bookTitle,pr.author,80,115)+'</div>'
+    +'<div class="ic">'
+    +'<p class="mono" style="font-size:9px;margin-bottom:3px">'+pr.readTime+'</p>'
+    +'<h3 style="font-size:15px;font-weight:400;color:var(--text-bright);line-height:1.3;margin-bottom:3px">'+E(pr.bookTitle)+'</h3>'
+    +'<p class="bt" style="font-size:11px">'+E(pr.author)+'</p>'
+    +'</div></div>';
+  }
+  grid.innerHTML=html;
+  var btn=document.getElementById('shuffle-btn');
+  if(btn){btn.style.transform='rotate(360deg)';setTimeout(function(){if(btn)btn.style.transform='';},400);}
+}
 function goRandom(cat){
   var pool=[];
   for(var i=0;i<RT.length;i++){
@@ -4901,6 +4945,7 @@ function ren(){
   else if(cView==='era')app.innerHTML=rEraPage();
 else if(cView==='history')app.innerHTML=rHistory();
 else if(cView==='about')app.innerHTML=rAbout();
+else if(cView==='request')app.innerHTML=rRequest();
 }
 
 function rHome(){
@@ -4916,18 +4961,21 @@ var featIdx=day%RT.length;
 var excerpt=featured.summary.split('\n\n')[0];
 if(excerpt.length>300)excerpt=excerpt.substring(0,300)+'...';
 
-// 3 random picks for "trending"
-var picks=[];var used={};used[featIdx]=true;
-while(picks.length<3){var ri=Math.floor(Math.random()*RT.length);if(!used[ri]){used[ri]=true;picks.push(ri);}}
+// Explore picks — persistent until shuffled
+if(homePicks.length===0){
+  var used2={};used2[featIdx]=true;
+  while(homePicks.length<6){var ri=Math.floor(Math.random()*RT.length);if(!used2[ri]){used2[ri]=true;homePicks.push(ri);}}
+}
 var pickCards='';
-for(var pi=0;pi<picks.length;pi++){var pr=RT[picks[pi]];
-pickCards+='<div class="card hcard" style="cursor:pointer" onclick="go(\'retelling\',RT['+picks[pi]+'])">'
+for(var pi=0;pi<homePicks.length;pi++){var pr=RT[homePicks[pi]];
+pickCards+='<div class="card hcard" style="cursor:pointer" onclick="go(\'retelling\',RT['+homePicks[pi]+'])">'
 +'<div class="cc" style="width:80px">'+gc(pr.bookTitle,pr.author,80,115)+'</div>'
 +'<div class="ic">'
 +'<p class="mono" style="font-size:9px;margin-bottom:3px">'+pr.readTime+'</p>'
 +'<h3 style="font-size:15px;font-weight:400;color:var(--text-bright);line-height:1.3;margin-bottom:3px">'+E(pr.bookTitle)+'</h3>'
 +'<p class="bt" style="font-size:11px">'+E(pr.author)+'</p>'
 +'</div></div>';}
+
 
 return '<section style="text-align:center;padding:90px 0 50px" class="fu">'
 +'<p class="mono" style="margin-bottom:20px;letter-spacing:.25em;font-size:10px">THE WORLD\'S GREATEST STORIES</p>'
@@ -4959,8 +5007,8 @@ return '<section style="text-align:center;padding:90px 0 50px" class="fu">'
 +'<section style="padding:40px 0">'
 +'<div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:16px">'
 +'<p class="mono" style="letter-spacing:.2em">EXPLORE</p>'
-+'<span class="gold" style="font-size:13px;cursor:pointer;font-family:Source Serif 4" onclick="goRandom()">Shuffle \u21bb</span></div>'
-+'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">'+pickCards+'</div></section>'
++'<span id="shuffle-btn" class="gold" style="font-size:13px;cursor:pointer;font-family:Source Serif 4;transition:transform .4s" onclick="shuffleHome()">Shuffle \u21bb</span></div>'
++'<div id="explore-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">'+pickCards+'</div></section>'
 
 // Navigation cards
 +'<section style="padding:40px 0 80px">'
@@ -5111,21 +5159,29 @@ return '<div class="fi" style="padding:50px 0 80px;max-width:700px">'
 
 +'</div>';}
 function rBlog(){
-var cards='';var count=0;
-for(var i=0;i<RT.length;i++){var r=RT[i];
-if(r.cat!=='lit')continue;count++;
+var litItems=[];
+for(var i=0;i<RT.length;i++){if(RT[i].cat==='lit')litItems.push({r:RT[i],idx:i});}
+var sorted=sortItems(litItems,blogSort);
+var cards='';var count=sorted.length;
+for(var li=0;li<sorted.length;li++){var i=sorted[li].idx;var r=sorted[li].r;
 cards+='<div class="card hcard" onclick="go(\'retelling\',RT['+i+'])" style="cursor:pointer">'
 +'<div class="cc" style="width:100px">'+gc(r.bookTitle,r.author,100,150)+'</div>'
 +'<div style="padding:18px 20px;flex:1">'
-+'<p class="mono" style="font-size:9px;margin-bottom:6px">'+r.readTime+' read \u00b7 ~'+r.words+' words</p>'
++'<p class="mono" style="font-size:9px;margin-bottom:6px">'+r.readTime+' read \u00b7 ~'+r.words+' words'+(r.year?' \u00b7 '+r.year:'')+'</p>'
 +'<h3 style="font-size:17px;font-weight:400;color:var(--text-bright);margin-bottom:4px;line-height:1.3">'+E(r.bookTitle)+'</h3>'
 +'<p class="bt" style="font-size:12px;margin-bottom:8px">by '+E(r.author)+'</p>'
 +'<p class="bt" style="font-size:12.5px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+E(r.preview)+'</p>'
 +'</div></div>';}
+var sortBar='<div style="display:flex;align-items:center;gap:8px;margin-bottom:24px;flex-wrap:wrap">'
++'<span class="mono" style="font-size:9px;color:var(--text-dim);letter-spacing:.1em">SORT:</span>'
++'<button onclick="setBlogSort(\'az\')" class="btn btn-sm'+(blogSort==='az'?'':' btn-g')+'" style="padding:5px 14px;font-size:11px">A \u2192 Z</button>'
++'<button onclick="setBlogSort(\'date\')" class="btn btn-sm'+(blogSort==='date'?'':' btn-g')+'" style="padding:5px 14px;font-size:11px">Old \u2192 New</button>'
++'</div>';
 return '<div class="fi" style="padding:50px 0 80px">'
 +'<p class="mono" style="margin-bottom:6px;letter-spacing:.2em">THE BLOG</p>'
 +'<h1 style="font-size:38px;font-weight:400;color:var(--text-bright);margin-bottom:6px">Literary Retellings</h1>'
-+'<p class="bt" style="margin-bottom:12px;max-width:560px">'+count+' classic novels and stories retold in full \u2014 faithful to the original, fresh in the telling.</p>'
++'<p class="bt" style="margin-bottom:20px;max-width:560px">'+count+' classic novels and stories retold in full \u2014 faithful to the original, fresh in the telling.</p>'
++sortBar
 +'<button class="btn btn-sm btn-g" style="margin-bottom:32px" onclick="goRandom(\'lit\')">Surprise me \u2728</button>'
 +'<div style="display:grid;gap:14px;max-width:700px">'+cards+'</div>'
 +'<div style="margin-top:48px;padding-top:32px;border-top:1px solid var(--border)">'
@@ -5133,16 +5189,11 @@ return '<div class="fi" style="padding:50px 0 80px">'
 +'<button class="btn btn-g" onclick="go(\'history\')">Browse Historical Texts \u2192</button>'
 +'</div></div>';}
 
-function rAbout(){
-return '<div class="fi" style="padding:50px 0 80px;max-width:680px">'
-+'<p class="mono" style="margin-bottom:6px;letter-spacing:.2em">ABOUT</p>'
-+'<h1 style="font-size:38px;font-weight:400;color:var(--text-bright);margin-bottom:28px">Literator</h1>'
-
-// REQUEST A RETELLING - TOP
-+'<div style="padding:28px;border:1px solid var(--border-hover);border-radius:4px;background:rgba(196,162,101,.04);margin-bottom:48px">'
+function rRequest(){
+return '<div class="fi" style="padding:50px 0 80px;max-width:600px">'
 +'<p class="mono" style="margin-bottom:6px;letter-spacing:.2em">\ud83d\udcec REQUEST A RETELLING</p>'
-+'<h2 style="font-size:22px;font-weight:400;color:var(--text-bright);margin-bottom:6px">Can\u2019t find a book?</h2>'
-+'<p class="bt" style="margin-bottom:20px">Tell us which book you\u2019d like retold next. Your suggestion goes straight to my Telegram.</p>'
++'<h1 style="font-size:38px;font-weight:400;color:var(--text-bright);margin-bottom:6px">Can\'t find a book?</h1>'
++'<p class="bt" style="margin-bottom:32px;max-width:520px">Tell us which book you\'d like retold next. Your suggestion goes straight to my Telegram and is considered for the next retelling.</p>'
 +'<div id="rf" style="display:flex;flex-direction:column;gap:14px;max-width:420px">'
 +'<input id="rt" placeholder="Book title">'
 +'<input id="ra" placeholder="Author name">'
@@ -5150,12 +5201,23 @@ return '<div class="fi" style="padding:50px 0 80px;max-width:680px">'
 +'<button class="btn btn-sm" style="align-self:flex-start" id="submit-btn" onclick="submitRequest()">Submit Request</button>'
 +'</div>'
 +'<div id="rk" style="display:none;padding:20px;margin-top:14px;border:1px solid rgba(196,162,101,.19);border-radius:3px;background:rgba(196,162,101,.04)">'
-+'<p style="color:var(--gold);font-size:16px">Thank you! Your suggestion has been sent.</p>'
++'<p style="color:var(--gold);font-size:16px">Thank you! Your suggestion has been sent. \u2713</p>'
 +'</div>'
 +'<div id="re" style="display:none;padding:20px;margin-top:14px;border:1px solid rgba(180,60,60,.3);border-radius:3px;background:rgba(180,60,60,.06)">'
 +'<p style="color:#c44;font-size:14px">Could not send. Please try again later.</p>'
 +'</div>'
++'</div>';}
+
+
+function rAbout(){
+return '<div class="fi" style="padding:50px 0 80px;max-width:680px">'
++'<p class="mono" style="margin-bottom:6px;letter-spacing:.2em">ABOUT</p>'
++'<h1 style="font-size:38px;font-weight:400;color:var(--text-bright);margin-bottom:28px">Literator</h1>'
+
++'<div style="margin-bottom:40px">'
++'<button class="btn" onclick="go(\'request\')">\ud83d\udcec Request a Retelling \u2192</button>'
 +'</div>'
+
 
 // WHY LITERATOR
 +'<div class="bt" style="font-size:16px;line-height:2">'
