@@ -6,8 +6,8 @@
 <title>LITERATOR — The World's Greatest Stories</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Source+Serif+4:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#08070a;--card:#0f0e13;--border:#1c1a24;--border-hover:rgba(196,162,101,.25);--gold:#c4a265;--gold-dim:#9a845a;--text:#cdc4b4;--text-dim:#7a7268;--text-bright:#ece6da;--header-bg:rgba(8,7,10,.93);--shadow:rgba(0,0,0,.3);--cover-text:rgba(255,255,255,.85);--cover-sub:rgba(255,255,255,.45);--cover-stroke:rgba(255,255,255,.1);--cover-inner:rgba(255,255,255,.08)}
-[data-theme="light"]{--bg:#f5f0e8;--card:#ffffff;--border:#d9d1c3;--border-hover:rgba(160,120,50,.35);--gold:#8b6914;--gold-dim:#a07d2e;--text:#4a4035;--text-dim:#7a7064;--text-bright:#1a1510;--header-bg:rgba(245,240,232,.95);--shadow:rgba(0,0,0,.08);--cover-text:rgba(255,255,255,.9);--cover-sub:rgba(255,255,255,.55);--cover-stroke:rgba(255,255,255,.15);--cover-inner:rgba(255,255,255,.1)}
+:root{--bg:#08070a;--card:#0f0e13;--border:#1c1a24;--border-hover:rgba(196,162,101,.25);--gold:#c4a265;--gold-rgb:196,162,101;--gold-dim:#9a845a;--text:#cdc4b4;--text-dim:#7a7268;--text-bright:#ece6da;--header-bg:rgba(8,7,10,.93);--shadow:rgba(0,0,0,.3);--cover-text:rgba(255,255,255,.85);--cover-sub:rgba(255,255,255,.45);--cover-stroke:rgba(255,255,255,.1);--cover-inner:rgba(255,255,255,.08)}
+[data-theme="light"]{--bg:#f5f0e8;--card:#ffffff;--border:#d9d1c3;--border-hover:rgba(160,120,50,.35);--gold:#8b6914;--gold-rgb:139,105,20;--gold-dim:#a07d2e;--text:#4a4035;--text-dim:#7a7064;--text-bright:#1a1510;--header-bg:rgba(245,240,232,.95);--shadow:rgba(0,0,0,.08);--cover-text:rgba(255,255,255,.9);--cover-sub:rgba(255,255,255,.55);--cover-stroke:rgba(255,255,255,.15);--cover-inner:rgba(255,255,255,.1)}
 *{margin:0;padding:0;box-sizing:border-box}::selection{background:var(--gold);color:var(--bg)}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:3px}
 html{scroll-behavior:smooth}
@@ -21,16 +21,25 @@ body{font-family:'DM Serif Display',Georgia,serif;background:var(--bg);color:var
 header{position:sticky;top:0;z-index:100;background:var(--header-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 clamp(16px,4vw,48px);height:60px;display:flex;align-items:center;justify-content:space-between;transition:background .4s,border-color .4s}
 .nl{cursor:pointer;padding:8px 16px;background:none;border:none;font-family:'DM Serif Display',serif;font-size:15px;color:var(--text-dim);letter-spacing:.04em;transition:color .3s;text-transform:capitalize}
 .nl:hover,.nl.active{color:var(--gold)}
-.theme-btn{cursor:pointer;background:none;border:1px solid var(--border);border-radius:20px;padding:6px 12px;display:flex;align-items:center;gap:6px;color:var(--text-dim);font-size:13px;transition:all .3s;margin-left:8px}
-.theme-btn:hover{border-color:var(--gold);color:var(--gold)}
+.theme-btn{cursor:pointer;position:relative;overflow:hidden;background:linear-gradient(to right,rgba(var(--gold-rgb),.07) 1%,transparent 40%,transparent 60%,rgba(var(--gold-rgb),.07) 100%);border:2px solid rgba(var(--gold-rgb),.35);border-radius:20px;padding:6px 12px;display:flex;align-items:center;gap:6px;color:var(--text-dim);font-size:13px;transition:border-color .3s,box-shadow .3s,color .3s;margin-left:8px;box-shadow:inset 0 0 8px rgba(var(--gold-rgb),.15),0 0 6px 2px rgba(var(--gold-rgb),.07)}
+.theme-btn:hover{border-color:var(--gold);color:var(--gold);box-shadow:inset 0 0 10px rgba(var(--gold-rgb),.35),0 0 9px 3px rgba(var(--gold-rgb),.15)}
+.theme-btn::before{content:"";position:absolute;left:0;width:4em;height:100%;top:0;pointer-events:none;background:linear-gradient(to right,transparent,rgba(var(--gold-rgb),.22) 50%,transparent);transform:translateX(calc(var(--gleam-x,-4em) - 2em));transition:none}
 .hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px}
 .mob-nav{display:none;flex-direction:column;background:var(--bg);border-bottom:1px solid var(--border);padding:12px clamp(16px,4vw,48px)}
 .card{cursor:pointer;border:1px solid var(--border);border-radius:3px;transition:all .35s;background:var(--card);position:relative;overflow:hidden}
 .card:hover{border-color:var(--border-hover);transform:translateY(-3px);box-shadow:0 8px 32px var(--shadow)}
-.btn{cursor:pointer;display:inline-block;padding:12px 32px;border:1px solid var(--gold);background:transparent;color:var(--gold);font-family:'DM Serif Display',serif;font-size:15px;letter-spacing:.08em;transition:all .3s;text-transform:uppercase}
-.btn:hover{background:var(--gold);color:var(--bg)}
-.btn-sm{padding:8px 20px;font-size:12px}
-.btn-g{border-color:var(--border);color:var(--text-dim)}
+.home-card{border:1px solid rgba(var(--gold-rgb),.2)!important;border-radius:1.2em!important;background:linear-gradient(135deg,rgba(var(--gold-rgb),.1) 0%,transparent 75%)!important;backdrop-filter:blur(12px);display:flex!important;flex-direction:column;justify-content:space-between;gap:.5em}
+.plain-card{border-radius:1em!important;background:var(--card)!important;border-color:var(--border)!important}
+.home-card:hover{border-color:rgba(var(--gold-rgb),.45)!important;transform:translateY(-3px);box-shadow:0 8px 32px rgba(var(--gold-rgb),.08)!important}
+.hc-arrow{width:fit-content;padding:.2em .75em;border:1px solid rgba(var(--gold-rgb),.35);border-radius:999px;display:flex;align-items:center;gap:.4em;font-size:10px;color:rgba(var(--gold-rgb),.6);transition:transform .2s,color .2s,border-color .2s;font-family:'Source Serif 4',serif}
+.home-card:hover .hc-arrow{color:var(--gold);border-color:rgba(var(--gold-rgb),.7);transform:translateY(1px)}
+.home-card:hover .hc-arrow svg{transform:translateX(20%);transition:transform .3s}
+.btn{cursor:pointer;display:inline-block;font-size:15px;padding:0.7em 2.7em;letter-spacing:.06em;position:relative;font-family:'DM Serif Display',serif;border-radius:0.6em;overflow:hidden;transition:all .3s,filter .3s;line-height:1.4em;border:2px solid var(--gold);background:linear-gradient(to right,rgba(var(--gold-rgb),.1) 1%,transparent 40%,transparent 60%,rgba(var(--gold-rgb),.1) 100%);color:var(--gold);box-shadow:inset 0 0 10px rgba(var(--gold-rgb),.35),0 0 9px 3px rgba(var(--gold-rgb),.1);text-transform:uppercase}
+.btn:hover{color:var(--text-bright);box-shadow:inset 0 0 10px rgba(var(--gold-rgb),.55),0 0 9px 3px rgba(var(--gold-rgb),.2)}
+.btn::before{content:"";position:absolute;left:0;width:5em;height:100%;top:0;pointer-events:none;background:linear-gradient(to right,transparent,rgba(var(--gold-rgb),.22) 50%,transparent);transform:translateX(calc(var(--gleam-x,-5em) - 2.5em));transition:none}
+.btn-sm{padding:.4em 1.5em;font-size:12px}
+.btn-g{border-color:rgba(var(--gold-rgb),.3);color:rgba(var(--gold-rgb),.6);box-shadow:none}
+.btn-g:hover{color:var(--gold);box-shadow:inset 0 0 10px rgba(var(--gold-rgb),.2),0 0 9px 3px rgba(var(--gold-rgb),.05)}
 .tag{display:inline-block;padding:3px 10px;border:1px solid var(--border);font-size:12px;color:var(--text-dim);font-family:'Source Serif 4',serif;transition:all .3s;margin:3px;border-radius:2px}
 .tag:hover{border-color:var(--gold);color:var(--gold)}
 .crumb{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -38,15 +47,36 @@ header{position:sticky;top:0;z-index:100;background:var(--header-bg);backdrop-fi
 .crumb span:hover{color:var(--gold)}
 input{background:var(--card);border:1px solid var(--border);color:var(--text);padding:12px 16px;font-family:'Source Serif 4',serif;font-size:14px;border-radius:3px;width:100%;outline:none;transition:border-color .3s,background .4s,color .4s}
 input:focus{border-color:var(--gold)}
+#search-input{border-radius:12px;padding:6px 30px 6px 12px;font-size:12px;width:180px;border:1.5px solid var(--border);box-shadow:0 0 20px -18px rgba(0,0,0,.5);transition:width .3s,border-color .3s cubic-bezier(.19,1,.22,1),box-shadow .3s cubic-bezier(.19,1,.22,1),transform .3s cubic-bezier(.19,1,.22,1)}
+#search-input:hover{border:2px solid rgba(var(--gold-rgb),.35);box-shadow:0 0 20px -17px rgba(0,0,0,.5)}
+#search-input:active{transform:scale(0.95)}
+#search-input:focus{border:2px solid var(--gold)}
+#rf input{border-radius:12px;border:1.5px solid var(--border);box-shadow:0 0 20px -18px rgba(0,0,0,.5);transition:border-color .3s cubic-bezier(.19,1,.22,1),box-shadow .3s cubic-bezier(.19,1,.22,1),transform .3s cubic-bezier(.19,1,.22,1)}
+#rf input:hover{border:2px solid rgba(var(--gold-rgb),.35);box-shadow:0 0 20px -17px rgba(0,0,0,.5)}
+#rf input:active{transform:scale(0.95)}
+#rf input:focus{border:2px solid var(--gold)}
 .container{max-width:1120px;margin:0 auto;padding:0 clamp(16px,4vw,24px)}
 .dv{height:1px;background:var(--gold);opacity:.6}
 .hcard{display:flex;padding:0}
 .hcard .cc{flex-shrink:0;overflow:hidden;border-radius:3px 0 0 3px}
 .hcard .ic{padding:16px 18px;flex:1}
+.ep-card{border:1px solid rgba(var(--gold-rgb),.25)!important;border-radius:1.2em!important;background:linear-gradient(135deg,rgba(var(--gold-rgb),.1) 0%,transparent 70%)!important;backdrop-filter:blur(12px);align-items:flex-start!important}
+.ep-card .cc{margin:8px!important;flex-shrink:0;border-radius:0!important;overflow:visible!important}
+.ep-card .cc canvas{display:block;width:64px!important;border-radius:.7em;clip-path:inset(0 round .7em)}
+.ep-card .ic{display:flex;flex-direction:column;justify-content:space-between}
+.ep-card:hover{border-color:rgba(var(--gold-rgb),.5)!important;box-shadow:0 8px 32px rgba(var(--gold-rgb),.1)!important;transform:translateY(-3px)}
+#explore-grid>.ep-card:hover{transform:none!important}
+.ep-arrow{width:fit-content;padding:.15em .7em;border:1px solid rgba(var(--gold-rgb),.3);border-radius:999px;display:flex;align-items:center;gap:.4em;font-size:10px;color:rgba(var(--gold-rgb),.6);font-family:'Source Serif 4',serif;margin-top:8px;transition:color .2s,border-color .2s,transform .2s}
+.ep-arrow svg{transition:transform .3s}
+.ep-card:hover .ep-arrow{color:var(--gold);border-color:rgba(var(--gold-rgb),.7);transform:translateY(1px)}
+.ep-card:hover .ep-arrow svg{transform:translateX(20%)}
 footer{border-top:1px solid var(--border);padding:36px clamp(16px,4vw,48px);text-align:center;transition:border-color .4s}
 #progress{position:fixed;top:60px;left:0;height:2px;background:var(--gold);z-index:99;transition:width .1s;width:0}
 @media(max-width:768px){.desk{display:none!important}.hamburger{display:block!important}}
-
+#explore-grid{-ms-overflow-style:none;scrollbar-width:none}
+#explore-grid::-webkit-scrollbar{display:none}
+#explore-grid>*{flex-shrink:0;width:calc(33.33% - 8px);scroll-snap-align:start}
+@media(max-width:600px){#explore-grid>*{width:calc(85% - 6px);min-width:0}}
 #btt{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--gold);color:var(--bg);border:none;cursor:pointer;font-size:20px;display:none;align-items:center;justify-content:center;z-index:90;box-shadow:0 4px 16px var(--shadow);transition:opacity .3s,transform .3s}
 #btt:hover{transform:scale(1.1)}
 
@@ -57,6 +87,11 @@ footer{border-top:1px solid var(--border);padding:36px clamp(16px,4vw,48px);text
 #tts-bar .tts-speed{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dim);cursor:pointer;padding:4px 8px;border:1px solid var(--border);border-radius:10px}
 #tts-bar .tts-speed:hover{border-color:var(--gold);color:var(--gold)}
 #tts-close{font-size:14px!important;width:28px!important;height:28px!important;border:none!important;color:var(--text-dim)!important}
+nav.desk{position:relative;overflow:visible}
+.nav-glider-container{position:absolute;bottom:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--gold-rgb),.3) 50%,transparent);pointer-events:none}
+.nav-glider{position:absolute;height:100%;background:linear-gradient(90deg,transparent,var(--gold) 50%,transparent);transition:left .5s cubic-bezier(.37,1.95,.66,.56),width .5s cubic-bezier(.37,1.95,.66,.56)}
+.nav-glider::before{content:"";position:absolute;width:60%;height:500%;left:50%;bottom:0;transform:translateX(-50%);background:var(--gold);filter:blur(12px);opacity:.2;pointer-events:none}
+.nav-glider::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:60px;background:linear-gradient(0deg,rgba(var(--gold-rgb),.06),transparent);pointer-events:none}
 </style>
 </head>
 <body>
@@ -74,10 +109,10 @@ footer{border-top:1px solid var(--border);padding:36px clamp(16px,4vw,48px);text
       <button class="nl" data-p="history" onclick="go('history')">History</button>
       <button class="nl" data-p="request" onclick="go('request')" style="color:var(--gold)">📬 Request</button>
       <button class="nl" data-p="about" onclick="go('about')">About</button>
+      <div class="nav-glider-container"><div class="nav-glider"></div></div>
     </nav>
     <div style="position:relative;margin-left:8px" class="desk">
-<input id="search-input" type="text" placeholder="Search authors, books..." 
-  style="width:180px;padding:6px 30px 6px 12px;font-size:12px;border-radius:16px;background:var(--card);border:1px solid var(--border);color:var(--text);font-family:'Source Serif 4',serif"
+<input id="search-input" type="text" placeholder="Search authors, books..."
   oninput="handleSearch(this.value)" onfocus="this.style.width='260px'" onblur="setTimeout(function(){document.getElementById('search-input').style.width='180px'},200)">
 <svg style="position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
 <div id="search-dropdown" style="display:none;position:absolute;top:100%;right:0;margin-top:6px;width:380px;max-height:420px;overflow-y:auto;background:var(--card);border:1px solid var(--border);border-radius:6px;box-shadow:0 12px 40px var(--shadow);z-index:200"></div>
@@ -4522,15 +4557,20 @@ function rGroupCards(forHome){
       var names=[];for(var ai=0;ai<Math.min(authors.length,5);ai++)names.push(authors[ai].n);
       var auStr=names.join(', ')+(authors.length>5?', \u2026':'');
       if(forHome){
-        cards+='<div class="card" style="padding:14px 12px" onclick="goReg(\''+clickId+'\')">'
+        cards+='<div class="card home-card" style="padding:14px 12px" onclick="goReg(\''+clickId+'\')">'
+          +'<div>'
           +'<div style="font-size:14px;font-weight:600;color:var(--text-bright);margin-bottom:2px">'+E(s.label)+'</div>'
-          +'<p class="bt" style="font-size:11px;line-height:1.4;color:var(--text-dim)">'+E(auStr)+'</p></div>';
+          +'<p class="bt" style="font-size:11px;line-height:1.4;color:var(--text-dim)">'+E(auStr)+'</p>'
+          +'</div>'
+          +'<div class="hc-arrow">Explore <svg width="11" height="11" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" fill="none" style="transition:transform .3s"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linejoin="round" stroke-linecap="round"/></svg></div>'
+          +'</div>';
       } else {
-        cards+='<div class="card" style="padding:16px 20px;cursor:pointer" onclick="goReg(\''+clickId+'\')">'
+        cards+='<div class="card plain-card" style="padding:16px 20px;cursor:pointer" onclick="goReg(\''+clickId+'\')">'
           +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">'
           +'<h3 style="font-size:16px;font-weight:600;color:var(--text-bright)">'+E(s.label)+'</h3>'
-          +'<span class="mono" style="font-size:9px;white-space:nowrap">'+authors.length+'</span></div>'
-          +'<p class="bt" style="font-size:12px;line-height:1.4;color:var(--text-dim)">'+E(auStr)+'</p></div>';
+          +'<span class="mono" style="font-size:9px;white-space:nowrap;color:var(--text-dim)">'+authors.length+'</span></div>'
+          +'<p class="bt" style="font-size:12px;line-height:1.4;color:var(--text-dim)">'+E(auStr)+'</p>'
+          +'</div>';
       }
     }
     var gcol=forHome?'repeat(auto-fill,minmax(170px,1fr))':'repeat(auto-fill,minmax(280px,1fr))';
@@ -4549,15 +4589,20 @@ function rEraCardsGrid(forHome){
     var names=[];for(var i=0;i<Math.min(auths.length,5);i++)names.push(auths[i].a.n);
     var auStr=names.join(', ')+(auths.length>5?', \u2026':'');
     if(forHome){
-      out+='<div class="card" style="padding:14px 12px" onclick="goEra('+ei+')">'
+      out+='<div class="card home-card" style="padding:14px 12px" onclick="goEra('+ei+')">'
+        +'<div>'
         +'<div style="font-size:14px;font-weight:600;color:var(--text-bright);margin-bottom:2px">'+era.emoji+' '+E(era.label)+'</div>'
-        +'<p class="bt" style="font-size:11px;line-height:1.4;color:var(--text-dim)">'+E(auStr)+'</p></div>';
+        +'<p class="bt" style="font-size:11px;line-height:1.4;color:var(--text-dim)">'+E(auStr)+'</p>'
+        +'</div>'
+        +'<div class="hc-arrow">Explore <svg width="11" height="11" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" fill="none" style="transition:transform .3s"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linejoin="round" stroke-linecap="round"/></svg></div>'
+        +'</div>';
     } else {
-      out+='<div class="card" style="padding:16px 20px;cursor:pointer" onclick="goEra('+ei+')">'
+      out+='<div class="card plain-card" style="padding:16px 20px;cursor:pointer" onclick="goEra('+ei+')">'
         +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">'
         +'<h3 style="font-size:16px;font-weight:600;color:var(--text-bright)">'+era.emoji+' '+E(era.label)+'</h3>'
-        +'<span class="mono" style="font-size:9px;white-space:nowrap">'+auths.length+'</span></div>'
-        +'<p class="bt" style="font-size:12px;line-height:1.4;color:var(--text-dim)">'+E(auStr)+'</p></div>';
+        +'<span class="mono" style="font-size:9px;white-space:nowrap;color:var(--text-dim)">'+auths.length+'</span></div>'
+        +'<p class="bt" style="font-size:12px;line-height:1.4;color:var(--text-dim)">'+E(auStr)+'</p>'
+        +'</div>';
     }
   }
   return out;
@@ -4592,14 +4637,16 @@ var auths=getEraAuthors(era);var cards='';
 for(var i=0;i<auths.length;i++){var item=auths[i],a=item.a;
 var tags='';for(var j=0;j<Math.min(a.b.length,2);j++)tags+='<span class="tag">'+E(a.b[j])+'</span>';
 if(a.b.length>2)tags+='<span class="tag" style="opacity:.5">+'+(a.b.length-2)+'</span>';
-cards+='<div class="card hcard" onclick="goReg(\''+item.rid+'\')">'
+cards+='<div class="card hcard ep-card" onclick="goReg(\''+item.rid+'\')">'
 +'<div class="cc" style="width:70px">'+gc(a.b[0],a.n,70,100)+'</div>'
-+'<div class="ic">'
++'<div class="ic"><div>'
 +'<div style="display:flex;justify-content:space-between;align-items:flex-start">'
 +'<h3 style="font-size:15px;font-weight:400;color:var(--text-bright);margin-bottom:2px">'+E(a.n)+'</h3>'
 +'<span class="mono" style="font-size:9px">'+item.re+'</span></div>'
 +'<p class="mono" style="font-size:9px;margin-bottom:4px">'+E(a.o)+'\u00b7'+E(a.y)+'</p>'
-+'<div>'+tags+'</div></div></div>';}
++'<div>'+tags+'</div>'
++'</div><div class="ep-arrow">Explore <svg width="11" height="11" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" fill="none"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linejoin="round" stroke-linecap="round"/></svg></div>'
++'</div></div>';}
 return '<div class="fi" style="padding:50px 0 80px">'
 +'<div class="crumb mono" style="margin-bottom:24px"><span onclick="go(\'library\')">Library</span><span style="color:var(--border)">\u203a</span><span class="gold">'+E(era.label)+'</span></div>'
 +'<h1 style="font-size:34px;font-weight:400;color:var(--text-bright);margin-bottom:6px">'+era.emoji+' '+E(era.label)+'</h1>'
@@ -4615,13 +4662,13 @@ for(var i=0;i<RT.length;i++){if(RT[i].cat==='hist')histItems.push({r:RT[i],idx:i
 var sorted=sortItems(histItems,histSort);
 var featured='';var fCount=sorted.length;
 for(var hi=0;hi<sorted.length;hi++){var i=sorted[hi].idx;var r=sorted[hi].r;
-featured+='<div class="card hcard" onclick="go(\'retelling\',RT['+i+'])">'
+featured+='<div class="card hcard ep-card" onclick="go(\'retelling\',RT['+i+'])">'
 +'<div class="cc" style="width:90px">'+gc(r.bookTitle,r.author,90,130)+'</div>'
-+'<div class="ic">'
++'<div class="ic"><div>'
 +'<p class="mono" style="font-size:9px;margin-bottom:4px">'+r.readTime+' \u00b7 ~'+r.words+' words'+(r.year?' \u00b7 '+r.year:'')+'</p>'
 +'<h3 style="font-size:15px;font-weight:400;color:var(--text-bright);margin-bottom:3px;line-height:1.3">'+E(r.bookTitle)+'</h3>'
-+'<p class="bt" style="font-size:11px;margin-bottom:4px">'+E(r.author)+'</p>'
-+'<p class="gold" style="font-size:11px;font-family:Source Serif 4;font-weight:500">Read retelling \u2192</p>'
++'<p class="bt" style="font-size:11px">'+E(r.author)+'</p>'
++'</div><div class="ep-arrow">Read <svg width="11" height="11" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" fill="none"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linejoin="round" stroke-linecap="round"/></svg></div>'
 +'</div></div>';}
 
 // Build catalog sections
@@ -4635,14 +4682,15 @@ for(var ci=0;ci<HIST.length;ci++){
   for(var wi=0;wi<cat.works.length;wi++){
     var w=cat.works[wi];
     var hasRt=false;for(var ri2=0;ri2<RT.length;ri2++){if(matchTitle(RT[ri2].bookTitle,w.title)||w.title.indexOf(RT[ri2].bookTitle)>=0||RT[ri2].bookTitle.indexOf(w.title)>=0){hasRt=true;break;}}
-    catalog+='<div class="card hcard" style="cursor:'+(hasRt?'pointer':'default')+'">'
+    catalog+='<div class="card hcard ep-card" style="cursor:'+(hasRt?'pointer':'default')+'">'
       +'<div class="cc" style="width:72px">'+gc(w.title,w.author,72,105)+'</div>'
-      +'<div class="ic">'
+      +'<div class="ic"><div>'
       +'<h3 style="font-size:15px;font-weight:500;color:var(--text-bright);margin-bottom:2px;line-height:1.3">'+E(w.title)+'</h3>'
       +'<p class="mono" style="font-size:9px;margin-bottom:6px">'+E(w.author)+' \u00b7 '+E(w.origin)+' \u00b7 '+E(w.y)+'</p>'
-      +'<p class="bt" style="font-size:11.5px;line-height:1.55">'+E(w.desc)+'</p>';
+      +'<p class="bt" style="font-size:11.5px;line-height:1.55">'+E(w.desc)+'</p>'
+      +'</div>';
     var rtMatch=null;for(var ri=0;ri<RT.length;ri++){if(matchTitle(RT[ri].bookTitle,w.title)){rtMatch=ri;break;}}
-    if(rtMatch!==null)catalog+='<p class="gold" style="font-size:12px;margin-top:6px;font-family:Source Serif 4;font-weight:500;cursor:pointer" onclick="event.stopPropagation();go(\'retelling\',RT['+rtMatch+'])">Read full retelling \u2192</p>';
+    if(rtMatch!==null)catalog+='<div class="ep-arrow" onclick="event.stopPropagation();go(\'retelling\',RT['+rtMatch+'])">Read <svg width="11" height="11" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" fill="none"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linejoin="round" stroke-linecap="round"/></svg></div>';
     catalog+='</div></div>';
   }
   catalog+='</div></div>';
@@ -4833,17 +4881,20 @@ function submitRequest(){
 function shuffleHome(){
   var featIdx=Math.floor(Date.now()/(1000*60*60*24))%RT.length;
   homePicks=[];var used={};used[featIdx]=true;
-  while(homePicks.length<6){var ri=Math.floor(Math.random()*RT.length);if(!used[ri]){used[ri]=true;homePicks.push(ri);}}
+  while(homePicks.length<10){var ri=Math.floor(Math.random()*RT.length);if(!used[ri]){used[ri]=true;homePicks.push(ri);}}
   var grid=document.getElementById('explore-grid');
   if(!grid){ren();return;}
   var html='';
   for(var pi=0;pi<homePicks.length;pi++){var pr=RT[homePicks[pi]];
-    html+='<div class="card hcard" style="cursor:pointer" onclick="go(\'retelling\',RT['+homePicks[pi]+'])">'
-    +'<div class="cc" style="width:80px">'+gc(pr.bookTitle,pr.author,80,115)+'</div>'
+    html+='<div class="card hcard ep-card" style="cursor:pointer" onclick="go(\'retelling\',RT['+homePicks[pi]+'])">'
+    +'<div class="cc" style="width:64px">'+gc(pr.bookTitle,pr.author,64,105)+'</div>'
     +'<div class="ic">'
+    +'<div>'
     +'<p class="mono" style="font-size:9px;margin-bottom:3px">'+pr.readTime+'</p>'
     +'<h3 style="font-size:15px;font-weight:400;color:var(--text-bright);line-height:1.3;margin-bottom:3px">'+E(pr.bookTitle)+'</h3>'
     +'<p class="bt" style="font-size:11px">'+E(pr.author)+'</p>'
+    +'</div>'
+    +'<div class="ep-arrow">Read <svg width="11" height="11" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" fill="none"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linejoin="round" stroke-linecap="round"/></svg></div>'
     +'</div></div>';
   }
   grid.innerHTML=html;
@@ -4952,7 +5003,7 @@ function rHome(){
 var stats='';
 var rtTotal=RT.length;
 var sv=[[R.length,'Traditions'],[tA,'Authors'],[tB,'Works'],[rtTotal,'Retellings']];
-for(var i=0;i<sv.length;i++)stats+='<div><div style="font-size:32px;color:var(--gold)">'+sv[i][0]+'</div><p class="mono" style="margin-top:2px;font-size:9px">'+sv[i][1]+'</p></div>';
+for(var i=0;i<sv.length;i++)stats+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding:28px 0'+(i<sv.length-1?';border-right:1px solid var(--border)':'')+'">'+'<p class="mono" style="font-size:9px;letter-spacing:.15em;color:var(--text-dim)">'+sv[i][1].toUpperCase()+'</p>'+'<span style="font-size:36px;font-weight:600;color:var(--text-bright);font-family:\'DM Serif Display\',serif;line-height:1">'+sv[i][0]+'</span>'+'</div>';
 
 // Pick a featured retelling (rotate daily)
 var day=Math.floor(Date.now()/(1000*60*60*24));
@@ -4964,16 +5015,19 @@ if(excerpt.length>300)excerpt=excerpt.substring(0,300)+'...';
 // Explore picks — persistent until shuffled
 if(homePicks.length===0){
   var used2={};used2[featIdx]=true;
-  while(homePicks.length<6){var ri=Math.floor(Math.random()*RT.length);if(!used2[ri]){used2[ri]=true;homePicks.push(ri);}}
+  while(homePicks.length<10){var ri=Math.floor(Math.random()*RT.length);if(!used2[ri]){used2[ri]=true;homePicks.push(ri);}}
 }
 var pickCards='';
 for(var pi=0;pi<homePicks.length;pi++){var pr=RT[homePicks[pi]];
-pickCards+='<div class="card hcard" style="cursor:pointer" onclick="go(\'retelling\',RT['+homePicks[pi]+'])">'
-+'<div class="cc" style="width:80px">'+gc(pr.bookTitle,pr.author,80,115)+'</div>'
+pickCards+='<div class="card hcard ep-card" style="cursor:pointer" onclick="go(\'retelling\',RT['+homePicks[pi]+'])">'
++'<div class="cc" style="width:64px">'+gc(pr.bookTitle,pr.author,64,105)+'</div>'
 +'<div class="ic">'
++'<div>'
 +'<p class="mono" style="font-size:9px;margin-bottom:3px">'+pr.readTime+'</p>'
 +'<h3 style="font-size:15px;font-weight:400;color:var(--text-bright);line-height:1.3;margin-bottom:3px">'+E(pr.bookTitle)+'</h3>'
 +'<p class="bt" style="font-size:11px">'+E(pr.author)+'</p>'
++'</div>'
++'<div class="ep-arrow">Read <svg width="11" height="11" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" fill="none"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linejoin="round" stroke-linecap="round"/></svg></div>'
 +'</div></div>';}
 
 
@@ -4986,7 +5040,9 @@ return '<section style="text-align:center;padding:90px 0 50px" class="fu">'
 +'<button class="btn" onclick="goRandom()">Surprise me \u2728</button>'
 +'<button class="btn btn-g" onclick="go(\'blog\')">Literary Retellings</button>'
 +'<button class="btn btn-g" onclick="go(\'history\')">Chronicles & Epics</button></div>'
-+'<div style="display:flex;justify-content:center;gap:48px;margin-top:50px;flex-wrap:wrap">'+stats+'</div>'
++'<div style="display:flex;justify-content:center;margin-top:50px">'
++'<div style="display:flex;width:100%;max-width:700px;border:1px solid var(--border);border-radius:1em;background:var(--card);overflow:hidden">'+stats+'</div>'
++'</div>'
 +'</section>'
 
 // Featured retelling of the day
@@ -5007,27 +5063,34 @@ return '<section style="text-align:center;padding:90px 0 50px" class="fu">'
 +'<section style="padding:40px 0">'
 +'<div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:16px">'
 +'<p class="mono" style="letter-spacing:.2em">EXPLORE</p>'
-+'<span id="shuffle-btn" class="gold" style="font-size:13px;cursor:pointer;font-family:Source Serif 4;transition:transform .4s" onclick="shuffleHome()">Shuffle \u21bb</span></div>'
-+'<div id="explore-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">'+pickCards+'</div></section>'
++'<div style="display:flex;align-items:center;gap:12px">'
++'<span id="shuffle-btn" class="gold" style="font-size:13px;cursor:pointer;font-family:Source Serif 4;transition:transform .4s" onclick="shuffleHome()">Shuffle \u21bb</span>'
++'<button onclick="document.getElementById(\'explore-grid\').scrollBy({left:-document.getElementById(\'explore-grid\').offsetWidth,behavior:\'smooth\'})" style="background:none;border:1px solid var(--border);border-radius:50%;width:28px;height:28px;cursor:pointer;color:var(--text-dim);font-size:14px;display:flex;align-items:center;justify-content:center">&#8249;</button>'
++'<button onclick="document.getElementById(\'explore-grid\').scrollBy({left:document.getElementById(\'explore-grid\').offsetWidth,behavior:\'smooth\'})" style="background:none;border:1px solid var(--border);border-radius:50%;width:28px;height:28px;cursor:pointer;color:var(--text-dim);font-size:14px;display:flex;align-items:center;justify-content:center">&#8250;</button>'
++'</div></div>'
++'<div id="explore-grid" style="display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;-ms-overflow-style:none;scrollbar-width:none;cursor:grab">'+pickCards+'</div></section>'
 
 // Navigation cards
 +'<section style="padding:40px 0 80px">'
-+'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">'
++'<div style="display:flex;border:1px solid var(--border);border-radius:1em;background:var(--card);overflow:hidden">'
 
-+'<div class="card" style="padding:24px;cursor:pointer" onclick="go(\'library\')">'
-+'<p class="mono" style="margin-bottom:6px;letter-spacing:.15em">\ud83c\udf0d LIBRARY</p>'
-+'<h3 style="font-size:18px;color:var(--text-bright);margin-bottom:6px">'+tA+' Authors, '+tB+' Works</h3>'
-+'<p class="bt" style="font-size:13px">Browse by region, culture, or era.</p></div>'
++'<div style="flex:1;padding:28px 24px;border-right:1px solid var(--border);cursor:pointer;transition:background .25s" onclick="go(\'library\')" onmouseenter="this.style.background=\'rgba(var(--gold-rgb),.04)\'" onmouseleave="this.style.background=\'\'">'
++'<p class="mono" style="font-size:9px;letter-spacing:.15em;color:var(--text-dim);margin-bottom:12px">\ud83c\udf0d LIBRARY</p>'
++'<p style="font-size:20px;font-weight:600;color:var(--text-bright);font-family:\'DM Serif Display\',serif;line-height:1.2;margin-bottom:8px">'+tA+' Authors, '+tB+' Works</p>'
++'<p class="bt" style="font-size:13px;color:var(--text-dim)">Browse by region, culture, or era.</p>'
++'</div>'
 
-+'<div class="card" style="padding:24px;cursor:pointer" onclick="go(\'blog\')">'
-+'<p class="mono" style="margin-bottom:6px;letter-spacing:.15em">\ud83d\udcd6 BLOG</p>'
-+'<h3 style="font-size:18px;color:var(--text-bright);margin-bottom:6px">'+RT.filter(function(r){return r.cat==="lit"}).length+' Literary Retellings</h3>'
-+'<p class="bt" style="font-size:13px">Novels and stories, retold with depth.</p></div>'
++'<div style="flex:1;padding:28px 24px;border-right:1px solid var(--border);cursor:pointer;transition:background .25s" onclick="go(\'blog\')" onmouseenter="this.style.background=\'rgba(var(--gold-rgb),.04)\'" onmouseleave="this.style.background=\'\'">'
++'<p class="mono" style="font-size:9px;letter-spacing:.15em;color:var(--text-dim);margin-bottom:12px">\ud83d\udcd6 BLOG</p>'
++'<p style="font-size:20px;font-weight:600;color:var(--text-bright);font-family:\'DM Serif Display\',serif;line-height:1.2;margin-bottom:8px">'+RT.filter(function(r){return r.cat==="lit"}).length+' Literary Retellings</p>'
++'<p class="bt" style="font-size:13px;color:var(--text-dim)">Novels and stories, retold with depth.</p>'
++'</div>'
 
-+'<div class="card" style="padding:24px;cursor:pointer" onclick="go(\'history\')">'
-+'<p class="mono" style="margin-bottom:6px;letter-spacing:.15em">\ud83c\udfdb\ufe0f HISTORY</p>'
-+'<h3 style="font-size:18px;color:var(--text-bright);margin-bottom:6px">62 Chronicles & Epics</h3>'
-+'<p class="bt" style="font-size:13px">The founding narratives of civilizations.</p></div>'
++'<div style="flex:1;padding:28px 24px;cursor:pointer;transition:background .25s" onclick="go(\'history\')" onmouseenter="this.style.background=\'rgba(var(--gold-rgb),.04)\'" onmouseleave="this.style.background=\'\'">'
++'<p class="mono" style="font-size:9px;letter-spacing:.15em;color:var(--text-dim);margin-bottom:12px">\ud83c\udfdb\ufe0f HISTORY</p>'
++'<p style="font-size:20px;font-weight:600;color:var(--text-bright);font-family:\'DM Serif Display\',serif;line-height:1.2;margin-bottom:8px">62 Chronicles & Epics</p>'
++'<p class="bt" style="font-size:13px;color:var(--text-dim)">The founding narratives of civilizations.</p>'
++'</div>'
 
 +'</div></section>';}
 
@@ -5052,13 +5115,14 @@ for(var i=0;i<r.a.length;i++){
   var a=r.a[i];
   var tags='';for(var j=0;j<Math.min(a.b.length,3);j++)tags+='<span class="tag">'+E(a.b[j])+'</span>';
   if(a.b.length>3)tags+='<span class="tag" style="opacity:.5">+' +(a.b.length-3)+'</span>';
-  cards+='<div class="card hcard" onclick="goAuth(\''+r.id+'\','+i+')">'
+  cards+='<div class="card hcard ep-card" onclick="goAuth(\''+r.id+'\','+i+')">'
     +'<div class="cc" style="width:80px">'+gc(a.b[0],a.n,80,120)+'</div>'
-    +'<div class="ic">'
+    +'<div class="ic"><div>'
     +'<h3 style="font-size:17px;font-weight:400;color:var(--text-bright);margin-bottom:2px">'+E(a.n)+'</h3>'
     +'<p class="mono" style="font-size:9px;margin-bottom:8px">'+E(a.o)+' \u00b7 '+E(a.y)+'</p>'
     +'<p class="bt" style="font-size:12px;line-height:1.6;margin-bottom:8px">'+E(a.p)+'</p>'
     +'<div>'+tags+'</div>'
+    +'</div><div class="ep-arrow">Explore <svg width="11" height="11" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" fill="none"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linejoin="round" stroke-linecap="round"/></svg></div>'
     +'</div></div>';
 }
 return '<div class="fi" style="padding:50px 0 80px">'
@@ -5071,11 +5135,11 @@ var books='';
 for(var i=0;i<a.b.length;i++){
   var b=a.b[i];var rt=null;
   for(var j=0;j<RT.length;j++){if(RT[j].bookTitle===b){rt=RT[j];break;}}
-  books+='<div class="card hcard" style="cursor:'+(rt?'pointer':'default')+'" '+(rt?'onclick="go(\'retelling\',RT['+j+'])"':'')+'>'
+  books+='<div class="card hcard ep-card" style="cursor:'+(rt?'pointer':'default')+';align-items:center" '+(rt?'onclick="go(\'retelling\',RT['+j+'])"':'')+'>'
     +'<div class="cc" style="width:56px">'+gc(b,a.n,56,80)+'</div>'
     +'<div style="padding:14px 18px;flex:1;display:flex;align-items:center;justify-content:space-between">'
     +'<span style="font-size:16px;color:var(--text-bright)">'+E(b)+'</span>'
-    +(rt?'<span class="gold" style="font-size:13px;font-family:Source Serif 4;white-space:nowrap">Read \u2192</span>':'<span class="mono" style="font-size:9px;color:var(--border)">Coming soon</span>')
+    +(rt?'<div class="ep-arrow">Read <svg width="11" height="11" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" fill="none"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linejoin="round" stroke-linecap="round"/></svg></div>':'<span class="mono" style="font-size:9px;color:var(--border)">Coming soon</span>')
     +'</div></div>';
 }
 return '<div class="fi" style="padding:50px 0 80px">'
@@ -5160,13 +5224,14 @@ for(var i=0;i<RT.length;i++){if(RT[i].cat==='lit')litItems.push({r:RT[i],idx:i})
 var sorted=sortItems(litItems,blogSort);
 var cards='';var count=sorted.length;
 for(var li=0;li<sorted.length;li++){var i=sorted[li].idx;var r=sorted[li].r;
-cards+='<div class="card hcard" onclick="go(\'retelling\',RT['+i+'])" style="cursor:pointer">'
+cards+='<div class="card hcard ep-card" onclick="go(\'retelling\',RT['+i+'])" style="cursor:pointer">'
 +'<div class="cc" style="width:100px">'+gc(r.bookTitle,r.author,100,150)+'</div>'
-+'<div style="padding:18px 20px;flex:1">'
++'<div style="padding:18px 20px;flex:1;display:flex;flex-direction:column;justify-content:space-between"><div>'
 +'<p class="mono" style="font-size:9px;margin-bottom:6px">'+r.readTime+' read \u00b7 ~'+r.words+' words'+(r.year?' \u00b7 '+r.year:'')+'</p>'
 +'<h3 style="font-size:17px;font-weight:400;color:var(--text-bright);margin-bottom:4px;line-height:1.3">'+E(r.bookTitle)+'</h3>'
 +'<p class="bt" style="font-size:12px;margin-bottom:8px">by '+E(r.author)+'</p>'
 +'<p class="bt" style="font-size:12.5px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+E(r.preview)+'</p>'
++'</div><div class="ep-arrow">Read <svg width="11" height="11" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" fill="none"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linejoin="round" stroke-linecap="round"/></svg></div>'
 +'</div></div>';}
 var sortBar='<div style="display:flex;align-items:center;gap:8px;margin-bottom:24px;flex-wrap:wrap">'
 +'<span class="mono" style="font-size:9px;color:var(--text-dim);letter-spacing:.1em">SORT:</span>'
@@ -5271,5 +5336,52 @@ _skipHashUpdate=false;
 <button id="tts-close" onclick="ttsStop()" title="Close">&times;</button>
 </div>
 <button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">&uarr;</button>
+<script>
+(function(){
+  function initDragScroll(el){
+    if(!el)return;
+    var isDown=false,startX,scrollLeft;
+    el.addEventListener('mousedown',function(e){isDown=true;el.style.cursor='grabbing';startX=e.pageX-el.offsetLeft;scrollLeft=el.scrollLeft;});
+    el.addEventListener('mouseleave',function(){isDown=false;el.style.cursor='grab';});
+    el.addEventListener('mouseup',function(){isDown=false;el.style.cursor='grab';});
+    el.addEventListener('mousemove',function(e){if(!isDown)return;e.preventDefault();var x=e.pageX-el.offsetLeft;el.scrollLeft=scrollLeft-(x-startX);});
+  }
+  function tryInitExplore(){var g=document.getElementById('explore-grid');if(g)initDragScroll(g);else setTimeout(tryInitExplore,200);}
+  tryInitExplore();
+  document.addEventListener('ren',function(){setTimeout(function(){initDragScroll(document.getElementById('explore-grid'));},100);});
+})();
+(function(){
+  function positionNavGlider(){
+    var active=document.querySelector('nav.desk .nl.active');
+    var glider=document.querySelector('.nav-glider');
+    if(!active||!glider)return;
+    var navRect=active.closest('nav').getBoundingClientRect();
+    var btnRect=active.getBoundingClientRect();
+    glider.style.left=(btnRect.left-navRect.left)+'px';
+    glider.style.width=btnRect.width+'px';
+  }
+  function initNavGlider(){
+    var nav=document.querySelector('nav.desk');
+    if(!nav)return;
+    new MutationObserver(positionNavGlider).observe(nav,{attributes:true,attributeFilter:['class'],subtree:true});
+    positionNavGlider();
+    window.addEventListener('resize',positionNavGlider);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initNavGlider);
+  else initNavGlider();
+})();
+(function(){
+  document.addEventListener('mousemove',function(e){
+    var btn=e.target.closest('.btn,.theme-btn');
+    if(!btn)return;
+    var r=btn.getBoundingClientRect();
+    btn.style.setProperty('--gleam-x',(e.clientX-r.left)+'px');
+  });
+  document.addEventListener('mouseout',function(e){
+    var btn=e.target.closest('.btn,.theme-btn');
+    if(btn&&!btn.contains(e.relatedTarget))btn.style.removeProperty('--gleam-x');
+  });
+})();
+</script>
 </body>
 </html>
