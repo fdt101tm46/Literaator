@@ -4911,7 +4911,7 @@ function goRandom(cat){
   go('retelling',RT[idx]);
 }
 
-var ttsUtterance=null,ttsParagraphs=[],ttsIdx=0,ttsPlaying=false,ttsRate=1,ttsTitle='';
+var ttsUtterance=null,ttsParagraphs=[],ttsIdx=0,ttsPlaying=false,ttsRate=0.9,ttsTitle='';
 
 function ttsStart(title,text){
   if(!('speechSynthesis' in window)){alert('Your browser does not support text-to-speech.');return;}
@@ -4935,10 +4935,16 @@ function ttsSpeakCurrent(){
   ttsUtterance.lang='en-US';
   // Try to pick a good voice
   var voices=window.speechSynthesis.getVoices();
-  for(var vi=0;vi<voices.length;vi++){
-    if(voices[vi].name.indexOf('Google')>=0&&voices[vi].lang.indexOf('en')>=0){ttsUtterance.voice=voices[vi];break;}
-    if(voices[vi].name.indexOf('Samantha')>=0){ttsUtterance.voice=voices[vi];break;}
+  var preferred=['Samantha','Karen','Moira','Fiona','Google UK English Female','Serena','Victoria','Allison','Ava','Microsoft Zira','Microsoft Susan','Microsoft Hazel'];
+  var picked=null;
+  for(var pi=0;pi<preferred.length&&!picked;pi++){
+    for(var vi=0;vi<voices.length;vi++){
+      if(voices[vi].name.indexOf(preferred[pi])>=0){picked=voices[vi];break;}
+    }
   }
+  // fallback: any female English voice
+  if(!picked){for(var vi=0;vi<voices.length;vi++){if(voices[vi].lang.indexOf('en')>=0&&(voices[vi].name.indexOf('Female')>=0||voices[vi].name.indexOf('female')>=0)){picked=voices[vi];break;}}}
+  if(picked)ttsUtterance.voice=picked;
   ttsUtterance.onend=function(){
     if(ttsPlaying){ttsIdx++;ttsSpeakCurrent();}
   };
@@ -5056,7 +5062,7 @@ return '<section style="text-align:center;padding:90px 0 50px" class="fu">'
 +'<p class="bt" style="font-size:14px;margin-bottom:4px">by '+E(featured.author)+'</p>'
 +'<p class="mono" style="font-size:9px;margin-bottom:14px">'+featured.readTime+' read</p>'
 +'<p class="bt" style="font-size:15px;line-height:1.8;margin-bottom:16px">'+E(excerpt)+'</p>'
-+'<p class="gold" style="font-size:14px;font-family:Source Serif 4;font-weight:500">Continue reading \u2192</p>'
++'<button class="btn" style="font-size:11px;padding:0.4em 1.5em;opacity:.55">Continue reading \u2192</button>'
 +'</div></div></div></section>'
 
 // Explore picks
